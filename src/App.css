@@ -1,3 +1,31 @@
+html, body, .root {
+  height: 100%;
+}
+body {
+  line-height: 1.5;
+}
+body, .app {
+  background: white;
+}
+
+/* main page */
+
+.app-header {
+  padding: 10px 0;
+  background: #057ead;
+  text-align: center;
+}
+.app-header h1 {
+  font-weight: 400;
+  margin: 0;
+  color: black;
+}
+
+
+
+
+
+
 .App {
   text-align: center;
 }
