@@ -63,6 +63,7 @@ class App extends Component {
           <h1>Sushi Finder - Frisco, TX</h1>
         </div>
         <MapCanvas
+          places= {this.state.places}
 
         />
 

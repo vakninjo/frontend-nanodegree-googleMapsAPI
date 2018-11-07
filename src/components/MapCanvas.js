@@ -9,6 +9,8 @@ class MapCanvas extends Component {
         this.setState({map});
     }
 
+
+
     render = () => {
         return (
             <Map
@@ -19,8 +21,17 @@ class MapCanvas extends Component {
                 initialCenter={{lat:'33.111835', lng:'-96.804988'}}
                 onReady= {this.mapReady}
             >
-                {/* <Marker onClick={this.onMarkerClick}
-                    name={'Current location'} /> */}
+                {this.props.places && this.props.places.map((place, index) =>
+                    <Marker 
+                        key ={index}
+                        name = {place.name}
+                        position={place.pos}
+                        animation = {this.props.google.maps.Animation.DROP}
+
+                    />
+
+                )}
+
 
                 {/* <InfoWindow onClose={this.onInfoWindowClose}>
                     <div>
