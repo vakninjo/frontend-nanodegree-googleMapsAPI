@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
-import { GoogleApiWrapper } from 'google-maps-react';
+import { Map, InfoWindow, Marker, GoogleApiWrapper } from 'google-maps-react';
 import MapCanvas from './components/MapCanvas';
 
 
 class App extends Component {
   state = {
-    places: [
+    offlinePlaces: [
       {
         "name": "Kura Revolving Sushi Bar",
         "street": "9292 Warren Pkwy #320",
@@ -53,9 +53,30 @@ class App extends Component {
         "url": "http://www.mesoasiafrisco.com/",
         "pos": { "lat": 33.114745, "lng": -96.806301 }
       }
-    ]
+    ],
+    initCenter: {lat:'33.111835', lng:'-96.804988'},
+    readyMap: null
 
   }
+
+  // goolgePlacesAPI = () => {
+  //   let service = new this.props.google.maps.places.PlacesService(this.state.readyMap);
+  //   service.nearbySearch(
+  //     {location: this.state.initCenter, radius: 50, type: ['store']},
+  //     function(results, status) {
+  //       if (status == 'OK') {
+  //         console.log(results);
+          
+  //       }
+  //     }
+  //   )
+  //   return fetch(`https://maps.googleapis.com/maps/api/js?key=AIzaSyARPBGEvrweLTkN1hfndTYsQDTt-ytv81g&libraries=places&`)
+  // }
+  
+  // componentWillMount(){
+  //   this.goolgePlacesAPI();
+  // }
+
   render() {
     return (
       <div className="App">
@@ -63,7 +84,10 @@ class App extends Component {
           <h1>Sushi Finder - Frisco, TX</h1>
         </div>
         <MapCanvas
-          places= {this.state.places}
+          offlinePlaces = {this.state.offlinePlaces}
+          startMapCenter = {this.state.initCenter}
+          readyMap = {this.state.readyMap}
+          onLoadGetPlaces = {this.goolgePlacesAPI}
 
         />
 
