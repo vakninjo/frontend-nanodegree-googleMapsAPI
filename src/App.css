@@ -22,6 +22,12 @@ body, .app {
 }
 
 
+/* InfoWindow */
+
+.info-window a {
+  display: block;
+
+}
 
 
 
