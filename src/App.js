@@ -3,7 +3,7 @@ import logo from './logo.svg';
 import './App.css';
 import { Map, InfoWindow, Marker, GoogleApiWrapper } from 'google-maps-react';
 import MapCanvas from './components/MapCanvas';
-
+import SideBar from './components/SideBar';
 
 class App extends Component {
   state = {
@@ -54,43 +54,54 @@ class App extends Component {
         "pos": { "lat": 33.114745, "lng": -96.806301 }
       }
     ],
-    initCenter: {lat:'33.111835', lng:'-96.804988'},
-    readyMap: null
+    initCenter: { lat: '33.111835', lng: '-96.804988' },
+    readyMap: null,
+    livePlaces: null,
+    open: true
 
   }
 
-  // goolgePlacesAPI = () => {
-  //   let service = new this.props.google.maps.places.PlacesService(this.state.readyMap);
-  //   service.nearbySearch(
-  //     {location: this.state.initCenter, radius: 50, type: ['store']},
-  //     function(results, status) {
-  //       if (status == 'OK') {
-  //         console.log(results);
-          
-  //       }
-  //     }
-  //   )
-  //   return fetch(`https://maps.googleapis.com/maps/api/js?key=AIzaSyARPBGEvrweLTkN1hfndTYsQDTt-ytv81g&libraries=places&`)
-  // }
-  
-  // componentWillMount(){
-  //   this.goolgePlacesAPI();
-  // }
+  updateLivePaces = (livePlaces) => {
+    this.setState({ livePlaces });
+  }
+  closeSideBar = () => {
+    this.setState({ open: !this.state.open })
+  }
+  updateQuery = (query) => {
+    this.setState({
+      ...this.state,
+      selectedIndex: null,
+      filtered: this.filterLocations(this.state.all, query)
+    });
+  }
+  clickListItem = (index) => {
+    this.setState({ open: !this.state.open })
+  }
+
 
   render() {
     return (
       <div className="App">
         <div className="app-header">
+          <button onClick={this.toggleDrawer} className="menuButton">
+            <i className="fa fa-bars"></i>
+          </button>
           <h1>Sushi Finder - Frisco, TX</h1>
         </div>
         <MapCanvas
-          offlinePlaces = {this.state.offlinePlaces}
-          startMapCenter = {this.state.initCenter}
-          readyMap = {this.state.readyMap}
-          onLoadGetPlaces = {this.goolgePlacesAPI}
+          offlinePlaces={this.state.offlinePlaces}
+          startMapCenter={this.state.initCenter}
+          readyMap={this.state.readyMap}
+          onUpdateLivePlaces={this.updateLivePaces}
+          updatedLivePlaces={this.state.livePlaces}
 
         />
-
+        <SideBar
+          updatedLivePlaces={this.state.livePlaces}
+          open={this.state.open}
+          toggleDrawer={this.toggleDrawer}
+          filterLocations={this.updateQuery}
+          clickListItem={this.clickListItem} />
       </div>
     );
   }

@@ -31,35 +31,8 @@ class MapCanvas extends Component {
             activeMarker: marker,
             selectedPlace: props
         })
-        // console.log(this.state.livePlaces)
-        // const {temp} = this.state.livePlaces
-        // const detailedPlace = new this.props.google.maps.places.PlacesService(this.props.map);
-        // detailedPlace.getDetails(
-        //     {
-        //         placeId: props.place_id
-        //     },this.detailedPlaceCallback
-        // )
+    }
 
-}
-
-    // detailedPlaceCallback = (results, status) => {
-    //     let detailedResults = [];
-    //     if (status == this.props.google.maps.places.PlacesServiceStatus.OK) {
-    //         // console.log(results)
-    //         detailedResults = results.map((place, index) => {
-    //             // console.log(place);
-
-    //             return place;
-
-    //         });
-    //         console.log(JSON.stringify(detailedResults));
-
-    //         this.setState({ liveDetailedPlaces: detailedResults }, () => console.log('liveEndfetch ' + this.state.livePlaces));
-
-
-    //     }
-
-    // }
 
     fetchPlacesCallack = (results, status) => {
         let cleanResults = [];
@@ -73,8 +46,8 @@ class MapCanvas extends Component {
             });
             console.log(JSON.stringify(cleanResults));
 
-            this.setState({ livePlaces: cleanResults }, () => console.log('liveEndfetch ' + this.state.livePlaces));
-
+            // this.setState({ livePlaces: cleanResults }, () => console.log('liveEndfetch ' + this.state.livePlaces));
+            this.props.onUpdateLivePlaces(cleanResults)    
 
         }
 
@@ -107,10 +80,10 @@ class MapCanvas extends Component {
                 initialCenter={this.props.startMapCenter}
                 onReady={this.mapReady}
                 offlinePlaces={this.props.offlinePlaces}
-                livePlaces={this.state.livePlaces}
+                // updatedLivePlaces={this.props.updatedLivePlaces}
             >
 
-                {this.state.livePlaces && this.state.livePlaces.map((place, index) =>
+                {this.props.updatedLivePlaces && this.props.updatedLivePlaces.map((place, index) =>
                     <Marker
                         key={index}
                         name={place.name}
@@ -123,31 +96,6 @@ class MapCanvas extends Component {
 
                     />
                 )}
-                {/* {this.props.offlinePlaces && this.props.offlinePlaces.map((place, index) =>
-                    <Marker
-                        key={index}
-                        name={place.name}
-                        position={place.pos}
-                        animation={this.props.google.maps.Animation.DROP}
-                        onClick={this.onMarkerClick}
-                    />
-
-
-                )}
-
-
-                {(this.props.pofflinePlaces && !this.state.livePlaces) && this.props.pofflinePlaces.map((place, index) =>
-                    <Marker
-                        key={index}
-                        name={place.name}
-                        position={place.pos}
-                        animation={this.props.google.maps.Animation.DROP}
-                        onClick={this.onMarkerClick}
-                    />
-
-
-                )} */}
-
                 <InfoWindow
                     
                     marker={this.state.activeMarker}
