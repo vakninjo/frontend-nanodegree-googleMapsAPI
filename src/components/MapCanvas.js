@@ -4,67 +4,66 @@ import { Map, InfoWindow, Marker, GoogleApiWrapper } from 'google-maps-react';
 class MapCanvas extends Component {
     state = {
         map: null,
-        markers: [],
-        markerPops: [],
-        activeMarker: null,
-        selectedPlace: null,
-        showingInfoWindow: false
+        activeMarker: {},
+        selectedPlace: {},
+        showingInfoWindow: false,
+        img: ''
 
 
     }
 
     mapReady = (mapProps, map) => {
-        // Save the map reference in state and prepare the location markers
-        this.setState({ map }, this.goolgePlacesAPI(mapProps, map));
+        // Keep Map reference for google API places call
+        // this.setState({ map }, this.goolgePlacesAPI(mapProps, map));
+        this.setState({ map });
 
     }
 
+
+    // https://github.com/fullstackreact/google-maps-react/blob/master/README.md
     onInfoWindowClose = () => {
         this.setState({ showingInfoWindow: false, activeMarker: null, activeMarkerProps: null });
     }
 
+    // https://github.com/fullstackreact/google-maps-react/blob/master/README.md
     onMarkerClick = (props, marker) => {
-        //close open info windows
-        this.onInfoWindowClose();
+        const place = this.props.searchResults.filter((place) => place.name === props.title)
+        console.log(props);
+        console.log(marker);
+        console.log(place);
+
         this.setState({
             showingInfoWindow: true,
             activeMarker: marker,
-            selectedPlace: props
+            selectedPlace: props,
+            selectedPlaceImg: place[0].img
         })
     }
-
-
-    fetchPlacesCallack = (results, status) => {
-        let cleanResults = [];
-        if (status == this.props.google.maps.places.PlacesServiceStatus.OK) {
-            // console.log(results)
-            cleanResults = results.map((place, index) => {
-                // console.log(place);
-
-                return place;
-
-            });
-            console.log(JSON.stringify(cleanResults));
-
-            // this.setState({ livePlaces: cleanResults }, () => console.log('liveEndfetch ' + this.state.livePlaces));
-            this.props.onUpdateLivePlaces(cleanResults)    
-
+    // https://github.com/fullstackreact/google-maps-react/blob/master/README.md
+    onMapClicked = (props) => {
+        if (this.state.showingInfoWindow) {
+            this.setState({
+                showingInfoWindow: false,
+                activeMarker: null
+            })
         }
+    };
 
+    imgRenderCheck = () => {
+        if (this.props.requestFailed) {
+            return (
+                <p> Not able to pull data from FourSquare </p>
+            )
+        } else {
+            return (
+                <div>
+                    <img src={this.state.selectedPlace && this.state.selectedPlaceImg} alt="Photo of place by FourSquare"></img>
+                    <a href={this.state.selectedPlace && this.state.selectedPlace.img}>Photos by FourSquare</a>
+                </div>
+            )
+        }
     }
 
-    goolgePlacesAPI = (mapProps, map) => {
-        this.setState({ map });
-        const { google } = mapProps;
-        const service = new google.maps.places.PlacesService(map);
-        service.nearbySearch(
-            { location: { lat: 33.111835, lng: -96.804988 }, radius: 1500, type: ['restaurant'], keyword: 'sushi' },
-            this.fetchPlacesCallack
-
-        )
-
-
-    }
 
 
 
@@ -76,42 +75,38 @@ class MapCanvas extends Component {
                 role='application'
                 aria-label='map'
                 google={this.props.google}
-                zoom={14}
+                zoom={15}
                 initialCenter={this.props.startMapCenter}
                 onReady={this.mapReady}
-                offlinePlaces={this.props.offlinePlaces}
-                // updatedLivePlaces={this.props.updatedLivePlaces}
+                onClick={this.onMapClicked}
             >
 
-                {this.props.updatedLivePlaces && this.props.updatedLivePlaces.map((place, index) =>
+                {this.props.searchResults && this.props.searchResults.map((place, index) =>
                     <Marker
                         key={index}
-                        name={place.name}
                         position={place.geometry.location}
                         animation={this.props.google.maps.Animation.DROP}
-                        url={place.photos[0].getUrl({ 'maxWidth': 100, 'maxHeight': 100 })}
-                        placeId={place.place_id}
-                        placeRating={place.rating}
                         onClick={this.onMarkerClick}
+                        name={place.name}
+                        title={place.name}
+                        placeRating={place.rating}
+                        img={place.img}
+
 
                     />
                 )}
                 <InfoWindow
-                    
                     marker={this.state.activeMarker}
                     visible={this.state.showingInfoWindow}
-                    offlinePlaces={this.props.offlinePlaces}
-                    livePlaces={this.state.livePlaces}
                     onClose={this.onInfoWindowClose}>
-                    {/* {Object.keys(this.state.selectedPlace).map((data,index) =>  */}
+
                     <div className="info-window">
                         <h1> {this.state.selectedPlace && this.state.selectedPlace.name}</h1>
-                        <h3> Raiting: {this.state.activeMarker && this.state.activeMarker.placeRating}</h3>
-                        {/* <p>{this.state.activeMarker && `url(${this.state.activeMarker.url})`}</p> */}
-                        <img src={this.state.activeMarker && this.state.activeMarker.url} alt="Photo of place by Google"></img>
-                        <a href={this.state.activeMarker && this.state.activeMarker.url}>Photos by Google</a>
+                        <h3> Rating: {this.state.selectedPlace && this.state.selectedPlace.placeRating}</h3>
+                        <p> Rating by Google Places</p>
+                        {this.imgRenderCheck()}
                     </div>
-                    {/* )} */}
+
 
                 </InfoWindow>
             </Map>

@@ -4,104 +4,117 @@ import './App.css';
 import { Map, InfoWindow, Marker, GoogleApiWrapper } from 'google-maps-react';
 import MapCanvas from './components/MapCanvas';
 import SideBar from './components/SideBar';
+import googlePlaces from './localGooglePlaces.json';
+
+//account 1
+const clientId = "OYQS2RVPUAFOY2BKRIRBBFPVNACQQHMM3L5ROQMADJH1YSP4";
+const clientSecret = "UBYI433XFUOEU3VWKMNWC5TLOBIPTFYHSRY4BDVL0EI2L0Q5";
+
+//acount 2
+// const clientId = "1SUVULBGJOCERASBVRYIFTI5MWFTK01HBFBUPTMDQX4BMKEN";
+// const clientSecret = "ARWCXSK0MYQ53WH4RTQYMFFTGHBQSLVOH2YECBFWRFSYUMPM";
+
+
 
 class App extends Component {
   state = {
-    offlinePlaces: [
-      {
-        "name": "Kura Revolving Sushi Bar",
-        "street": "9292 Warren Pkwy #320",
-        "city": "Frisco",
-        "state": "TX",
-        "zip": "75035",
-        "url": "http://kurausa.com/",
-        "pos": { "lat": 33.109221, "lng": -96.801711 }
-      },
-      {
-        "name": "Sushi Damu",
-        "street": "3685 Preston Rd #101",
-        "city": "Frisco",
-        "state": "TX",
-        "zip": "75034",
-        "url": "http://sushidamutexas.com/",
-        "pos": { "lat": 33.10999, "lng": -96.807553 }
-      },
-      {
-        "name": "Roll & Poke",
-        "street": "3311 Preston Rd #5",
-        "city": "Frisco",
-        "state": "TX",
-        "zip": "75034",
-        "url": "http://www.rollnpokedallas.com/",
-        "pos": { "lat": 33.106629, "lng": -96.807427 }
-      },
-      {
-        "name": "Great Wall Super Buffet",
-        "street": "2750 Preston Rd",
-        "city": "Frisco",
-        "state": "TX",
-        "zip": "75034",
-        "url": "",
-        "pos": { "lat": 33.286841, "lng": -96.782636 }
-      },
-      {
-        "name": "Los Cucos Mexican Restaurant",
-        "street": "4235 Preston Rd",
-        "city": "Frisco",
-        "state": "TX",
-        "zip": "75034",
-        "url": "http://www.mesoasiafrisco.com/",
-        "pos": { "lat": 33.114745, "lng": -96.806301 }
-      }
-    ],
-    initCenter: { lat: '33.111835', lng: '-96.804988' },
+    offlinePlaces: googlePlaces,
+    initCenter: { lat: '33.105226', lng: '-96.805046' },
+    searchResults: [],
+    open: false,
     readyMap: null,
-    livePlaces: null,
-    open: true
-
+    query: '',
+    requestFailed: false
   }
 
-  updateLivePaces = (livePlaces) => {
-    this.setState({ livePlaces });
-  }
+  //sidebar callbacks
   closeSideBar = () => {
     this.setState({ open: !this.state.open })
   }
-  updateQuery = (query) => {
-    this.setState({
-      ...this.state,
-      selectedIndex: null,
-      filtered: this.filterLocations(this.state.all, query)
-    });
+  openCloseSideBar = () => {
+    // https://stackoverflow.com/questions/44351009/material-ui-left-drawer-in-app-bar-wont-close-on-overlay-click-or-menu-item-cli?rq=1
+    this.setState({ open: !this.state.open });
   }
-  clickListItem = (index) => {
+  updateQuery = (query) => {
+    this.setState({ query })
+    if (query) {
+      const filtered = this.state.searchResults.filter(place => place.name.toLowerCase().includes(query.toLowerCase()));
+      this.setState({ searchResults: filtered });
+    } 
+  }
+  selectedSearchResult = (placeName) => {
+    document.querySelector(`[title="${placeName}"`).click()
+    // https://stackoverflow.com/questions/44351009/material-ui-left-drawer-in-app-bar-wont-close-on-overlay-click-or-menu-item-cli?rq=1
     this.setState({ open: !this.state.open })
   }
+
+
+  //enrich local locations with FourSquares data
+  componentWillMount = () => {
+    this.getFSData();
+  }
+  // Get venue ID
+  getFSVenueID = (lat, lng, name) => {
+    return fetch(`https://api.foursquare.com/v2/venues/search?client_id=${clientId}&client_secret=${clientSecret}&v=20181101&limit=1&ll=${lat},${lng}&query=${name}`)
+      .then((response) => response.json())
+      .then((response) => response.response.venues[0].id);
+  }
+  // Get venue data from venue ID
+  getFSVenueInfo = (venueId) => {
+    return fetch(`https://api.foursquare.com/v2/venues/${venueId}?client_id=${clientId}&client_secret=${clientSecret}&v=20181101`)
+      .then((response) => response.json())
+      .then((response) => response.response.venue);
+  }
+  // FS data from API
+  getFSData = () => {
+    const updatedPlacesFSQR = this.state.offlinePlaces.map((place) => {
+      const size = 200
+      this.getFSVenueID(place.geometry.location.lat, place.geometry.location.lng, place.name)
+        .then((venueId) => {
+          this.getFSVenueInfo(venueId)
+            .then((venueInfo) => {
+              let buildURL = new URL(venueInfo.bestPhoto.prefix + size + venueInfo.bestPhoto.suffix);
+
+              place.likes = venueInfo.likes.count
+              place.img = buildURL.href
+            })
+            .catch(() => this.setState({ requestFailed: true })
+        )})
+        .catch(() => this.setState({ requestFailed: true }));
+      return place;
+    });
+    console.log(updatedPlacesFSQR);
+    
+    this.setState({searchResults: updatedPlacesFSQR}, () => console.log(this.state.searchResults));
+    
+  }
+  
 
 
   render() {
     return (
       <div className="App">
         <div className="app-header">
-          <button onClick={this.toggleDrawer} className="menuButton">
-            <i className="fa fa-bars"></i>
+          <h1 className="app-title">Sushi Finder - Frisco, TX</h1>
+          <button onClick={this.openCloseSideBar} className="menu-button">
+            <i className="fas fa-search"></i>
           </button>
-          <h1>Sushi Finder - Frisco, TX</h1>
         </div>
         <MapCanvas
-          offlinePlaces={this.state.offlinePlaces}
           startMapCenter={this.state.initCenter}
           readyMap={this.state.readyMap}
-          onUpdateLivePlaces={this.updateLivePaces}
-          updatedLivePlaces={this.state.livePlaces}
+          searchResults={this.state.searchResults}
+          requestFailed={this.state.requestFailed}
 
         />
         <SideBar
-          updatedLivePlaces={this.state.livePlaces}
           open={this.state.open}
-          toggleDrawer={this.toggleDrawer}
-          filterLocations={this.updateQuery}
-          clickListItem={this.clickListItem} />
+          openCloseSideBar={this.openCloseSideBar}
+          updateQuery={this.updateQuery}
+          searchResults={this.state.searchResults}
+          query={this.state.query}
+          selectedSearchResult={this.selectedSearchResult}
+        />
       </div>
     );
   }

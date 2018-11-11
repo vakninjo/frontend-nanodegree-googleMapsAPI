@@ -3,13 +3,12 @@ import Drawer from '@material-ui/core/Drawer';
 
 class SideBar extends Component {
     state = {
-        open: true,
-        query: ""
+        
     }
 
     styles = {
         divList: {
-            width: "200px",
+            width: "auto",
             padding: "0px 20px"
         },
         ul: {
@@ -17,72 +16,55 @@ class SideBar extends Component {
             padding: 1
         },
         li: {
-            marginBottom: "20px"
+            marginBottom: "20px",
+            
         },
         listButton: {
             background: "transparent",
             border: "none",
-            color: "#057ead"
+            color: "#057ead",
+            cursor: "pointer"
         },
         input: {
             border: "2px solid gray",
             padding: "2.3px",
             margin: "30px 0px 10px",
             width: "100%"
+        },
+        drawer: {
+            background: '#057ead'
         }
+        
     };
-    updateQuery = (newQuery) => {
-        // Save the new query string in state and pass the string
-        // up the call tree
-        this.setState({ query: newQuery });
-        this.props.filterLocations(newQuery);
-    }
 
-//     render = () => {
-//         return (
-//             <div>
-//                 <Drawer open={this.props.open} onClose={this.props.toggleDrawer}>
-//                     <div >
-//                         <input
-//                             // style={this.styles.filterEntry}
-//                             type="text"
-//                             placeholder="Filter list"
-//                             name="filter"
-//                             onChange={e => console.log(e.target.value)}
-//                             value={this.state.query} />
-//                         <ul className="menu-sidebar-list">
-//                             {this.props.updatedLivePlaces && this.props.updatedLivePlaces.map((place, index) => {
-//                                     return (
-//                                         <li key={index}>
-//                                             <button key={index} onClick={e => this.props.clickListItem(index)}>{place.name}</button>
-//                                         </li>
-//                                     )
-//                                 })}
-//                         </ul>
-//                     </div>
-//                 </Drawer>
-//             </div>
-//         )
-//     }
-// }
 
 render = () => {
     return (
         <div>
-            <Drawer open={this.props.open} onClose={this.props.toggleDrawer}>
+            <Drawer open={this.props.open} onClose={this.props.openCloseSideBar} onRequestChange={this.props.openCloseSideBar}>
                 <div style={this.styles.divList}>
+                    <h3>Sushi place by name</h3>
                     <input
+                        aria-label='Filter Sushi resturants'
                         style={this.styles.input}
                         type="text"
-                        placeholder="Filter list"
+                        placeholder="Filter Sushi resturants"
                         name="filter"
-                        onChange={e => console.log(e.target.value)}
-                        value={this.state.query} />
+                        onChange={event => this.props.updateQuery(event.target.value)}
+                        value={this.props.query} />
+                    
                     <ul style={this.styles.ul}>
-                        {this.props.updatedLivePlaces && this.props.updatedLivePlaces.map((place, index) => {
+                        {this.props.searchResults && this.props.searchResults.map((place, index) => {
                                 return (
                                     <li style={this.styles.li} key={index}>
-                                        <button style={this.styles.listButton} key={index} onClick={e => this.props.clickListItem(index)}>{place.name}</button>
+                                        <button 
+                                            style={this.styles.listButton} 
+                                            key={index} 
+                                            onClick={() => this.props.selectedSearchResult(place.name)}
+                                            aria-label='Sushi location'
+                                        >
+                                            {place.name}
+                                        </button>
                                     </li>
                                 )
                             })}
