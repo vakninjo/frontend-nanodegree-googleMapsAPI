@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
 import Drawer from '@material-ui/core/Drawer';
+import '../App.css';
 
 class SideBar extends Component {
-    state = {
-        
-    }
-
+    //js styles due to issues with using class names
     styles = {
         divList: {
             width: "auto",
@@ -17,7 +15,7 @@ class SideBar extends Component {
         },
         li: {
             marginBottom: "20px",
-            
+
         },
         listButton: {
             background: "transparent",
@@ -34,10 +32,8 @@ class SideBar extends Component {
         drawer: {
             background: '#057ead'
         }
-        
+
     };
-
-
 render = () => {
     return (
         <div>
@@ -52,22 +48,22 @@ render = () => {
                         name="filter"
                         onChange={event => this.props.updateQuery(event.target.value)}
                         value={this.props.query} />
-                    
+
                     <ul style={this.styles.ul}>
                         {this.props.searchResults && this.props.searchResults.map((place, index) => {
-                                return (
-                                    <li style={this.styles.li} key={index}>
-                                        <button 
-                                            style={this.styles.listButton} 
-                                            key={index} 
-                                            onClick={() => this.props.selectedSearchResult(place.name)}
-                                            aria-label='Sushi location'
-                                        >
-                                            {place.name}
-                                        </button>
-                                    </li>
-                                )
-                            })}
+                            return (
+                                <li style={this.styles.li} key={index}>
+                                    <button
+                                        style={this.styles.listButton}
+                                        key={index}
+                                        onClick={() => this.props.selectedSearchResult(place.name)}
+                                        aria-label='Sushi location'
+                                    >
+                                        {place.name}
+                                    </button>
+                                </li>
+                            )
+                        })}
                     </ul>
                 </div>
             </Drawer>
@@ -76,4 +72,7 @@ render = () => {
 }
 }
 
+
 export default SideBar;
+
+

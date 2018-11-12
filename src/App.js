@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
-import { Map, InfoWindow, Marker, GoogleApiWrapper } from 'google-maps-react';
 import MapCanvas from './components/MapCanvas';
 import SideBar from './components/SideBar';
 import googlePlaces from './localGooglePlaces.json';
@@ -9,12 +7,6 @@ import googlePlaces from './localGooglePlaces.json';
 //account 1
 const clientId = "OYQS2RVPUAFOY2BKRIRBBFPVNACQQHMM3L5ROQMADJH1YSP4";
 const clientSecret = "UBYI433XFUOEU3VWKMNWC5TLOBIPTFYHSRY4BDVL0EI2L0Q5";
-
-//acount 2
-// const clientId = "1SUVULBGJOCERASBVRYIFTI5MWFTK01HBFBUPTMDQX4BMKEN";
-// const clientSecret = "ARWCXSK0MYQ53WH4RTQYMFFTGHBQSLVOH2YECBFWRFSYUMPM";
-
-
 
 class App extends Component {
   state = {
@@ -40,7 +32,9 @@ class App extends Component {
     if (query) {
       const filtered = this.state.searchResults.filter(place => place.name.toLowerCase().includes(query.toLowerCase()));
       this.setState({ searchResults: filtered });
-    } 
+    } else {
+      this.setState({ searchResults: this.state.updatePlaces });
+    }
   }
   selectedSearchResult = (placeName) => {
     document.querySelector(`[title="${placeName}"`).click()
@@ -73,8 +67,7 @@ class App extends Component {
         .then((venueId) => {
           this.getFSVenueInfo(venueId)
             .then((venueInfo) => {
-              let buildURL = new URL(venueInfo.bestPhoto.prefix + size + venueInfo.bestPhoto.suffix);
-
+              const buildURL = new URL(venueInfo.bestPhoto.prefix + size + venueInfo.bestPhoto.suffix);
               place.likes = venueInfo.likes.count
               place.img = buildURL.href
             })
@@ -83,9 +76,7 @@ class App extends Component {
         .catch(() => this.setState({ requestFailed: true }));
       return place;
     });
-    console.log(updatedPlacesFSQR);
-    
-    this.setState({searchResults: updatedPlacesFSQR}, () => console.log(this.state.searchResults));
+    this.setState({searchResults: updatedPlacesFSQR, updatePlaces: updatedPlacesFSQR}, () => console.log(this.state.searchResults));
     
   }
   

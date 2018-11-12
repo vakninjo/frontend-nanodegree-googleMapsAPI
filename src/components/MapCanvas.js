@@ -1,25 +1,19 @@
 import React, { Component } from 'react';
 import { Map, InfoWindow, Marker, GoogleApiWrapper } from 'google-maps-react';
+import GMauthFailure from './GMauthFailure';
 
 class MapCanvas extends Component {
     state = {
         map: null,
         activeMarker: {},
         selectedPlace: {},
-        showingInfoWindow: false,
-        img: ''
-
-
+        showingInfoWindow: false
     }
 
     mapReady = (mapProps, map) => {
-        // Keep Map reference for google API places call
-        // this.setState({ map }, this.goolgePlacesAPI(mapProps, map));
         this.setState({ map });
-
     }
-
-
+    
     // https://github.com/fullstackreact/google-maps-react/blob/master/README.md
     onInfoWindowClose = () => {
         this.setState({ showingInfoWindow: false, activeMarker: null, activeMarkerProps: null });
@@ -28,9 +22,6 @@ class MapCanvas extends Component {
     // https://github.com/fullstackreact/google-maps-react/blob/master/README.md
     onMarkerClick = (props, marker) => {
         const place = this.props.searchResults.filter((place) => place.name === props.title)
-        console.log(props);
-        console.log(marker);
-        console.log(place);
 
         this.setState({
             showingInfoWindow: true,
@@ -116,5 +107,6 @@ class MapCanvas extends Component {
 }
 
 export default GoogleApiWrapper({
-    apiKey: ('AIzaSyARPBGEvrweLTkN1hfndTYsQDTt-ytv81g')
+    apiKey: ('AIzaSyARPBGEvrweLTkN1hfndTYsQDTt-ytv81g'), LoadingContainer: GMauthFailure
 })(MapCanvas)
+
