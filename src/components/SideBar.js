@@ -37,7 +37,7 @@ class SideBar extends Component {
 render = () => {
     return (
         <div>
-            <Drawer open={this.props.open} onClose={this.props.openCloseSideBar} onRequestChange={this.props.openCloseSideBar}>
+            <Drawer open={this.props.open} onClose={this.props.openCloseSideBar}>
                 <div style={this.styles.divList}>
                     <h3>Sushi place by name</h3>
                     <input
