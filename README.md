@@ -12,7 +12,7 @@ Once installed, in your working directory you will need to clone this repo and r
 
 This will install all the dependencies and the app can be launched using `npm start`
 ```
-git clone https://github.com/
+git clone https://github.com/vakninjo/sushi-finder.git
 npm install
 npm start
 ```
