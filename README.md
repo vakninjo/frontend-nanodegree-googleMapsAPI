@@ -35,18 +35,18 @@ Once the Map is loaded you will be positioned in a center location with near by 
 This porjects uses Create-React-App defualt service worker functions to cache data. Full use is availibe when run in production. 
 
 ## Resources
-[React API](https://reactjs.org/docs/react-api.html)
-[create-react-app](https://github.com/facebook/create-react-app/)
-[Material-ui API](https://github.com/mui-org/material-ui)
-[FontAwesome](https://fontawesome.com/how-to-use/on-the-web/setup/getting-started?using=web-fonts-with-css)
-[create-react-app](https://fonts.google.com/)
-[google-maps-react](https://github.com/fullstackreact/google-maps-react)
-[Using google-react-map](https://www.fullstackreact.com/articles/how-to-write-a-google-maps-react-component/)
-[Stackoverflow](https://stackoverflow.com/questions/48493960/using-google-map-in-react-component)
-[Google Maps API](https://developers.google.com/maps/documentation/)
-[Google Places API](https://developers.google.com/places/web-service/intro)
-[Foursquare API](https://developer.foursquare.com/)
-[Google Maps Street View Service](https://developers.google.com/maps/documentation/javascript/streetview)
+* [React API](https://reactjs.org/docs/react-api.html)
+* [create-react-app](https://github.com/facebook/create-react-app/)
+* [Material-ui API](https://github.com/mui-org/material-ui)
+* [FontAwesome](https://fontawesome.com/how-to-use/on-the-web/setup/getting-started?using=web-fonts-with-css)
+* [create-react-app](https://fonts.google.com/)
+* [google-maps-react](https://github.com/fullstackreact/google-maps-react)
+* [Using google-react-map](https://www.fullstackreact.com/articles/how-to-write-a-google-maps-react-component/)
+* [Stackoverflow](https://stackoverflow.com/questions/48493960/using-google-map-in-react-component)
+* [Google Maps API](https://developers.google.com/maps/documentation/)
+* [Google Places API](https://developers.google.com/places/web-service/intro)
+* [Foursquare API](https://developer.foursquare.com/)
+* [Google Maps Street View Service](https://developers.google.com/maps/documentation/javascript/streetview)
 
 
 ### Udacity Project Rubric:
